@@ -42,8 +42,10 @@ the person `operators.yaml` names (`/canon-change`). People change the canon by 
    never a paragraph of instructions), with `mcp__trinity__chat_with_agent(parallel=true)`.
    Long work: `async=true`; the receipt comes back at once and the result reports into this chat
    when the desk finishes. Record the receipt in the ledger before you do anything else.
-4. **Park, don't wait.** If a result is not back in this turn, write the open loop, set a
-   reminder if nothing else will wake you, and end the turn. Nothing is held in your head.
+4. **Park, don't wait.** A desk's work can take minutes. Poll a receipt at most three times, about
+   a minute apart; then answer the person with what is in, name what is still running (with its
+   execution id - it reports back into this chat when done), write the open loop, set a reminder
+   if nothing else will wake you, and end the turn. Nothing is held in your head.
 5. **Check it.** "Done" from a desk is a claim. Open the evidence it names (a file, a stage, a
    note) before you report it done. If you cannot open it, report "claimed, not verified".
 6. **Close**: report it done with the receipt, or ask a person - once, with options and a deadline.

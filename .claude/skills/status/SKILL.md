@@ -14,16 +14,20 @@ meeting-notes-bot). The brain is asked only if a desk's answer needs judgment.
 
 ## 2. Ask all of them in one turn, in parallel
 Issue the four calls **in the same message** so they run together, each
-`mcp__trinity__chat_with_agent(agent_name=<desk>, message=<one line>, parallel=true)`:
-- `sales-agent`: `/deal --review`
-- `delivery-agent`: `/clients --stalled`
-- `marketing-agent`: `/weekly-report`
-- `meeting-notes-bot`: `/process-inbox`
+`mcp__trinity__chat_with_agent(agent_name=<desk>, message=<the one line below>, parallel=true)`.
+The question is the same for every desk - a **read-only status question**, not a playbook that
+does work (a weekly report or a content plan can take ten minutes and call other agents; a status
+answer must not):
+
+```
+Status for the orchestrator's brief: from your own files only, in at most 8 lines, what needs a person today (decisions, approvals, stalls, anything at risk)? Do not call other agents and do not write files.
+```
 
 Record each receipt in `ledger/receipts.jsonl` (`kind: status`). A call that returns a receipt
-instead of an answer (`accepted`, `queued`, timed out) is **running, not failed**: note the
-execution id and read it with `mcp__trinity__get_execution_result` before you write the summary;
-if it is still running when you must answer, say "running, not yet answered".
+instead of an answer (`accepted`, `queued`, `queued_timeout`) is **running, not failed**: poll
+`mcp__trinity__get_execution_result` for it, at most **three times, about a minute apart**. A
+desk still running after that is reported as "running, not yet answered (exec <id>)" - its result
+reports back into this chat when it finishes. Never wait longer than that to answer the person.
 
 ## 3. One summary, same shape every time
 ```
