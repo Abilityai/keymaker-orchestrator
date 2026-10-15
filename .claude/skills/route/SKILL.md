@@ -53,11 +53,13 @@ nothing ran: queue it (step 2). Never re-send on a timeout.
 
 ## 5. Report now, verify later
 
-Tell the person what went where, with each execution id, and what you are waiting on. If the
-work is long, the desk's result reports back into this chat when it finishes; add the open loop to
-`ledger/open_loops.md` and end the turn. If the result is already in: open the evidence it names
-(`/deal --review` output, the client record, the file) before calling it done. Update the row to
-`verified` (with the evidence) or `claimed` (could not open it - say so).
+**Answer as soon as the receipts are recorded** - within a minute or two of the request, not when
+the desks finish. Tell the person what went where, with each execution id, and what you are
+waiting on. Poll a receipt at most once before answering; a desk's result reports back into this
+chat on its own when it finishes. Verification (opening the evidence a desk names - the deal file,
+the client record, the note) belongs to the next `/open-loops` run or to the reminder you arm, not
+to this turn: write the loop to `ledger/open_loops.md`, set the reminder, end the turn. When you do
+verify, update the row to `verified` (with the evidence) or `claimed` (could not open it - say so).
 
 ## 6. Close or escalate
 
