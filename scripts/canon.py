@@ -116,8 +116,23 @@ def cmd_owner(kind):
 
 
 def cmd_approver(action):
+    """Match by phrase, then by shared words (so 'a new price' finds 'a new price, or a change to
+    pricing.md' and 'discount build' finds 'discount on a Pilot or a Build')."""
     ops = load("operators.yaml")
-    hits = [a for a in ops["approvals"] if action.lower() in a["action"].lower()]
+    q = action.lower().strip()
+    hits = [a for a in ops["approvals"] if q and q in a["action"].lower()]
+    if not hits and q:
+        stop = {"a", "an", "the", "or", "on", "to", "of", "any", "in", "for"}
+        words = {w.strip(",.") for w in q.split()} - stop
+        scored = []
+        for a in ops["approvals"]:
+            aw = {w.strip(",.") for w in a["action"].lower().split()} - stop
+            n = len(words & aw)
+            if n:
+                scored.append((n, a))
+        hits = [a for n, a in sorted(scored, key=lambda t: -t[0]) if n == scored[0][0]] if scored else []
+    if not q:
+        hits = ops["approvals"]
     print(json.dumps(hits or {"action": action, "approver": "not in the map - ask the principal"}, indent=2))
 
 
