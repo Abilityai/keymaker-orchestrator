@@ -9,7 +9,7 @@ version: 1.0
 
 ## 1. Read the map
 `python3 scripts/canon.py refresh && python3 scripts/canon.py owners` - the desks to ask are the
-agents in `owners.yaml` with a playbook that reports (sales-agent, delivery-agent, marketing-agent,
+agents in `domains.yaml` with a playbook that reports (sales-agent, delivery-agent, marketing-agent,
 meeting-notes-bot). The brain is asked only if a desk's answer needs judgment.
 
 ## 2. Ask all of them in one turn, in parallel

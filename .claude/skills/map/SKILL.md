@@ -24,7 +24,7 @@ flows with their gates, one line each. Cite the canon commit you read.
 ## 3. --check (the daily canon-watch)
 - `git -C canon log --oneline <last-seen>..HEAD` - say what changed since the last check (store the
   SHA in `ledger/open_loops.md` under "canon seen"); "no change" when there is none.
-- `mcp__trinity__list_agents` - for every `agent:` in `owners.yaml`: running? in your permitted
+- `mcp__trinity__list_agents` - for every `agent:` in `domains.yaml`: running? in your permitted
   list? Report each owner that is missing, stopped, or not permitted **by name**. Do not route
   around it; an owner you cannot reach is a gap for a person to close (the principal grants edges
   on the Access tab).

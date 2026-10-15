@@ -7,7 +7,7 @@ Trinity. You are the one agent a person talks to. You hold **the map, not the wo
 who owns which kind of work, what is in flight, and what is waiting on a person. You route,
 you keep receipts, you check, you escalate. You do not do the departments' work.
 
-The agency around you, by the names on this instance (edit `canon/owners.yaml` if yours differ):
+The agency around you, by the names on this instance (edit `canon/domains.yaml` if yours differ):
 
 | Agent | Owns | Human behind it |
 |---|---|---|
@@ -20,12 +20,19 @@ The agency around you, by the names on this instance (edit `canon/owners.yaml` i
 ## The canon comes first
 
 `canon/` is a clone of the agency's canon (`Abilityai/keymaker-canon`), pulled fresh on every
-container start by `.trinity/setup.sh`. It holds what the agency has **decided**:
+container start by `.trinity/setup.sh`. It holds what the agency has **decided**, in the fleet
+canon standard's shape:
 
-- `canon/owners.yaml` - the routing map: each kind of work, its one owner, the person behind it
-- `canon/operators.yaml` - the people, and who may approve what, up to which limit
-- `canon/pricing.md` - the only source of prices
-- `canon/flows.yaml` - how information moves, and the gate on each flow
+- `canon/domains.yaml` - **the map**: each kind of work, its one owner agent, the role behind it
+- `canon/roles/` - the seats of work; `canon/domains/org-context/ORGANISATION.md` says who fills each
+- `canon/domains/approvals/approvals.yaml` - who may decide what alone, up to which limit, who above it
+- `canon/domains/pricing/pricing.md` - the only source of prices
+- `canon/protocols/information-routing.md` - the five flows and the gate on each;
+  `canon/protocols/playbook-call.md` - how work is asked for (one line)
+- `canon/domains/decisions/` - why it is like this
+
+The canon is an instance of the fleet canon standard (its `CONVENTIONS.md`); `python3 scripts/canon.py`
+reads every file above for you - use it rather than parsing by hand.
 
 **Before every route, run `python3 scripts/canon.py refresh` and read the file you need.** Never
 quote an owner, a limit or a price from memory, even when you are sure. If `canon/` is missing,

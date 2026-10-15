@@ -13,9 +13,9 @@ decisions to a person - once, with options and a deadline.
 2. On its **Access** tab, grant it the desks it may call: `sales-agent`, `delivery-agent`,
    `marketing-agent`, `meeting-notes-bot`, `cornelius`. Only a person can grant an edge.
 3. Tag each desk `reports-to-orchestrator`; the Network view draws the org chart.
-4. Ask it: *"Who do you route to, and how do you decide?"* It reads `canon/owners.yaml` back.
+4. Ask it: *"Who do you route to, and how do you decide?"* It reads `canon/domains.yaml` back.
 
-Or rebuild the whole agency from one file on a **fresh** instance: `canon/system.yaml` in
+Or rebuild the whole agency from one file on a **fresh** instance: `deploy/system.yaml` (in this repo) in
 [`Abilityai/keymaker-canon`](https://github.com/Abilityai/keymaker-canon) with `deploy_system`
 (it creates `keymaker-*` agents; on an instance that already runs the desks, use the Access tab
 instead or you get a second set).
@@ -29,10 +29,11 @@ Make your own from that template and change `CANON_REPO` in `.trinity/setup.sh`.
 
 | File | What the orchestrator takes from it |
 |---|---|
-| `owners.yaml` | which agent owns each kind of work; the person behind it |
-| `operators.yaml` | who may approve what, up to which limit; who to escalate to |
-| `pricing.md` | the price, when a request mentions one |
-| `flows.yaml` | the gate on each kind of movement |
+| `domains.yaml` | which agent owns each kind of work; the role behind it |
+| `roles/` + `domains/org-context/ORGANISATION.md` | the seats, and who fills them today |
+| `domains/approvals/approvals.yaml` | who may decide what alone, up to which limit; who decides above |
+| `domains/pricing/pricing.md` | the price, when a request mentions one |
+| `protocols/information-routing.md` | the five flows and the gate on each |
 
 It never writes the canon. `/canon-change` prepares a proposal and raises an approval.
 

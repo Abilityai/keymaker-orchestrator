@@ -2,13 +2,13 @@
 """Read the agency's canon from canon/. stdlib only.
 
   python3 scripts/canon.py refresh            pull the canon; print the commit it is at
-  python3 scripts/canon.py owner <kind>       who owns a kind of work (leads, deals, pricing, ...)
-  python3 scripts/canon.py owners             the whole routing map, one line each
-  python3 scripts/canon.py approver <action>  who approves an action, and the limit
-  python3 scripts/canon.py people             the operators
-  python3 scripts/canon.py price <offer>      a price from pricing.md
-  python3 scripts/canon.py flows              the flows and their gates
-  python3 scripts/canon.py check              every owner in owners.yaml, with the agent named
+  python3 scripts/canon.py owner <kind>       who owns a kind of work (leads, deals, pricing, ...) - domains.yaml
+  python3 scripts/canon.py owners             the whole map, one line each - domains.yaml
+  python3 scripts/canon.py approver <action>  who approves an action, and the limit - domains/approvals/approvals.yaml
+  python3 scripts/canon.py roles              the seats and who fills them - roles/ + domains/org-context/ORGANISATION.md
+  python3 scripts/canon.py price <offer>      a price - domains/pricing/pricing.md
+  python3 scripts/canon.py flows              the flows and their gates - protocols/information-routing.md
+  python3 scripts/canon.py check              every owner in domains.yaml, with the agent named
 """
 import json, os, re, subprocess, sys
 
@@ -101,24 +101,37 @@ def cmd_refresh():
     print(f"canon at {sha}" + ("" if r.returncode == 0 else f" (pull failed: {r.stderr.strip()[:120]}; reading the local copy)"))
 
 
+def _domains():
+    m = load("domains.yaml")
+    out = []
+    for d in m["domains"]:
+        agent = None if d.get("owner") in (None, "steward") else d.get("owner")
+        out.append({"kind": d["id"], "agent": agent, "role": d.get("role"), "description": d.get("description"),
+                    "playbooks": d.get("playbooks") or [], "path": d.get("path"), "hands_to": d.get("hands_to"),
+                    "consumers": d.get("consumers") or []})
+    return out, m
+
+
 def cmd_owners():
-    for w in load("owners.yaml")["work"]:
-        print(f"{w['kind']:<24} agent={w.get('agent')!s:<20} person={w.get('person')}")
-    print(f"unmatched -> {load('owners.yaml').get('unmatched')}")
+    rows, m = _domains()
+    for w in rows:
+        print(f"{w['kind']:<24} agent={w.get('agent')!s:<20} role={w.get('role')}")
+    print(f"unmatched -> {m.get('unmatched')}")
 
 
 def cmd_owner(kind):
-    work = load("owners.yaml")["work"]
-    for w in work:
-        if w["kind"] == kind or kind in (w.get("description") or "").lower():
+    rows, m = _domains()
+    q = kind.lower().strip()
+    for w in rows:
+        if w["kind"] == q or q in (w.get("description") or "").lower():
             print(json.dumps(w, indent=2)); return
-    print(json.dumps({"kind": kind, "agent": None, "note": load("owners.yaml").get("unmatched")}, indent=2))
+    print(json.dumps({"kind": kind, "agent": None, "note": m.get("unmatched")}, indent=2))
 
 
 def cmd_approver(action):
     """Match by phrase, then by shared words (so 'a new price' finds 'a new price, or a change to
     pricing.md' and 'discount build' finds 'discount on a Pilot or a Build')."""
-    ops = load("operators.yaml")
+    ops = load("domains/approvals/approvals.yaml")
     q = action.lower().strip()
     hits = [a for a in ops["approvals"] if q and q in a["action"].lower()]
     if not hits and q:
@@ -136,9 +149,17 @@ def cmd_approver(action):
     print(json.dumps(hits or {"action": action, "approver": "not in the map - ask the principal"}, indent=2))
 
 
-def cmd_people():
-    for p in load("operators.yaml")["people"]:
-        print(f"{p['id']:<10} {p['name']:<18} {p['role']:<18} {p['email']}  operates={p.get('operates')}")
+def cmd_roles():
+    import glob as _g
+    for rp in sorted(_g.glob(os.path.join(CANON, "roles", "*.yaml"))):
+        r = _yaml(rp)
+        print(f"{r.get('id'):<18} {r.get('status'):<7} defaults_to={r.get('defaults_to')!s:<10} {r.get('title')}")
+    org = os.path.join(CANON, "domains", "org-context", "ORGANISATION.md")
+    if os.path.exists(org):
+        print("# who fills each seat (domains/org-context/ORGANISATION.md):")
+        for line in open(org):
+            if line.startswith("| `"):
+                print("  " + line.strip())
 
 
 def cmd_price(offer):
@@ -146,7 +167,7 @@ def cmd_price(offer):
     name that starts with or contains the query - so 'Build' is the Build row, not the audit
     whose description says 'rebuild'."""
     rows = []
-    for line in load("pricing.md").splitlines():
+    for line in load("domains/pricing/pricing.md").splitlines():
         if line.startswith("|") and not line.startswith("|--") and "Offer" not in line.split("|")[1]:
             cells = [c.strip() for c in line.strip("|").split("|")]
             if len(cells) >= 3:
@@ -160,13 +181,26 @@ def cmd_price(offer):
 
 
 def cmd_flows():
-    for f in load("flows.yaml")["flows"]:
+    """The machine-readable block at the end of protocols/information-routing.md."""
+    text = load("protocols/information-routing.md")
+    m = re.search(r"```yaml\n(.*?)```", text, re.S)
+    if not m:
+        die("protocols/information-routing.md has no machine-readable block")
+    tmp = os.path.join(CANON, ".flows.tmp.yaml")
+    open(tmp, "w").write(m.group(1))
+    try:
+        data = _yaml(tmp)
+    finally:
+        os.remove(tmp)
+    for f in data["flows"]:
         print(f"{f['id']:<28} gate={f['gate']:<16} {f['from']} -> {f['to']}")
+    print(f"escalate_now: {data.get('escalate_now')}")
 
 
 def cmd_check():
-    for w in load("owners.yaml")["work"]:
-        print(json.dumps({"kind": w["kind"], "agent": w.get("agent")}))
+    rows, _ = _domains()
+    for w in rows:
+        print(json.dumps({"kind": w["kind"], "agent": w.get("agent"), "role": w.get("role")}))
     print("# verify each agent above with mcp__trinity__list_agents (running + permitted); report any that is not")
 
 
@@ -175,5 +209,5 @@ if __name__ == "__main__":
     if not args:
         print(__doc__); sys.exit(0)
     c, rest = args[0], args[1:]
-    {"refresh": cmd_refresh, "owners": cmd_owners, "people": cmd_people, "flows": cmd_flows, "check": cmd_check}.get(c, lambda: None)() if c in ("refresh", "owners", "people", "flows", "check") else \
+    {"refresh": cmd_refresh, "owners": cmd_owners, "roles": cmd_roles, "people": cmd_roles, "flows": cmd_flows, "check": cmd_check}.get(c, lambda: None)() if c in ("refresh", "owners", "roles", "people", "flows", "check") else \
         {"owner": cmd_owner, "approver": cmd_approver, "price": cmd_price}.get(c, lambda *_: print(__doc__))(" ".join(rest))

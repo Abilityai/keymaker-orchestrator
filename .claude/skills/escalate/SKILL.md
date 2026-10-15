@@ -11,10 +11,12 @@ version: 1.0
 ```
 python3 scripts/canon.py refresh
 python3 scripts/canon.py approver "<the action>"
-python3 scripts/canon.py people
+python3 scripts/canon.py roles
 ```
-`decides_alone` + `limit` say whether a person below the principal may decide; `above_limit` names
-who decides past it. If the action is not in the map, the approver is the principal and the ask
+`decides_alone` + `limit` say which **role** may decide alone; `above_limit` names the role past it.
+A role, never a person: `python3 scripts/canon.py roles` shows who fills each seat today
+(`domains/org-context/ORGANISATION.md`); the `principal` is the instance owner, so `to: primary`.
+`expires_after_hours` is the ask's lifetime. If the action is not in the map, the approver is the principal and the ask
 says "not in the approval map - add it?".
 
 If the decision needs judgment (a discount, a scope change, a risk), ask the brain first in the
@@ -32,8 +34,8 @@ and put its answer, labelled, in the ask's context.
 - `options`: at most 4, each the choice only (e.g. `Hold the list price`, `10% as an invoice credit`,
   `Pilot first, credited`) - never "something else", the platform adds it
 - `proposal`: what you will route if each option is chosen (the one-line playbook call per option)
-- `expires_at`: from `operators.yaml` `expires_after` (default 3 business days), ISO with timezone
-- `priority`: `high` for the `now` class in `operators.yaml` (`--now`), else `medium`
+- `expires_at`: now + `expires_after_hours` from the approval entry (default 72 h), ISO with timezone
+- `priority`: `high` for the `escalate_now` classes in `domains/approvals/approvals.yaml` (`--now`), else `medium`
 
 ## 3. Record and stop
 Append the ask to `ledger/open_loops.md`: request id, who, expires, what each option routes.

@@ -15,8 +15,9 @@ One sentence: you never write the canon; a person does, by pull request. Then do
 python3 scripts/canon.py refresh
 python3 scripts/canon.py approver "<the action: a new price / an owner / a limit / an operator>"
 ```
-Prices → `canon/pricing.md`, principal. Owners → `canon/owners.yaml`, principal. Limits and people →
-`canon/operators.yaml`, principal. Read the current value from the file; quote it exactly.
+Prices → `canon/domains/pricing/pricing.md`. Owners → `canon/domains.yaml`. Limits → `canon/domains/approvals/approvals.yaml`.
+Who fills a seat → `canon/domains/org-context/ORGANISATION.md`. All decided by the `principal` role, by PR.
+Read the current value from the file; quote it exactly.
 
 ## 3. Write the proposal
 `proposals/<YYYY-MM-DD>-<slug>.md`:
@@ -26,10 +27,10 @@ File: canon/<file>
 Before: <the exact current line(s)>
 After:  <the exact proposed line(s)>
 Why (as given): <the request, verbatim>
-Touches: <what else reads this value - from owners.yaml reads/ and flows.yaml>
-Approver: <name, role> (canon/operators.yaml)
+Touches: <what else reads this value - from domains.yaml reads/ and protocols/information-routing.md>
+Approver: <name, role> (canon/domains/approvals/approvals.yaml)
 Ask: <request_id> · expires <date>
-How to apply: edit the file on a branch, open a PR to the canon repo, merge; add decisions/NNNN-<slug>.md
+How to apply: edit the file on a branch, run tools/canon-lint, open a PR to the canon repo, merge; add domains/decisions/NNNN-<slug>.md
 ```
 
 ## 4. Raise the approval, once
