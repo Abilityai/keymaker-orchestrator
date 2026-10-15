@@ -1,0 +1,38 @@
+title: "Keymaker Orchestrator"
+refresh: 60
+# Every number here is bound to a metric declared in template.yaml and recorded by the
+# playbooks (/status records desks_silent_last_brief, /open-loops records open_loops and
+# asks_pending, /route counts requests_routed_week). Nothing is typed in by hand.
+sections:
+  - title: "Routing"
+    layout: grid
+    columns: 4
+    widgets:
+      - type: metric
+        id: requests_routed_week
+        metric: requests_routed_week
+        label: "Requests routed (week)"
+      - type: metric
+        id: open_loops
+        metric: open_loops
+        label: "Open loops"
+      - type: metric
+        id: asks_pending
+        metric: asks_pending
+        label: "Decisions waiting on a person"
+      - type: metric
+        id: desks_silent_last_brief
+        metric: desks_silent_last_brief
+        label: "Desks silent at last brief"
+  - title: "Where to look"
+    layout: list
+    widgets:
+      - type: links
+        id: links
+        items:
+          - label: "The canon (what the agency decided)"
+            url: "https://github.com/Abilityai/keymaker-canon"
+          - label: "Ledger of receipts"
+            url: "ledger/receipts.jsonl"
+          - label: "Open loops"
+            url: "ledger/open_loops.md"
