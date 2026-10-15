@@ -60,7 +60,7 @@ commands:
     description: Check every receipt in the ledger, close what finished, chase what expired
     usage: /open-loops
 
-folders:
+shared_folders:
   expose: true     # ledger/ and proposals/ readable by the agency's other agents and people
   consume: true    # reads what the desks expose
 
@@ -70,15 +70,19 @@ credentials: {}
 # The numbers this agent owns: how routing itself is doing.
 metrics:
   - name: requests_routed_week
+    label: "Requests routed (week)"
     type: counter
     description: Requests handed to an owner with a receipt this week
   - name: open_loops
+    label: "Open loops"
     type: gauge
     description: Hand-offs without a verified result
   - name: asks_pending
+    label: "Decisions waiting on a person"
     type: gauge
     description: Decisions waiting on a person
   - name: desks_silent_last_brief
+    label: "Desks silent at last brief"
     type: gauge
     description: Desks that did not answer the last morning brief
 
@@ -88,7 +92,7 @@ schedules:
     cron: "30 7 * * 1-5"
     timezone: "America/New_York"
     message: "/status --brief"
-    description: "Every weekday after the desks' own morning runs: one brief for the principal, one line per desk, silence named."
+    description: "Every weekday morning: one brief for the principal, one line per desk, silence named. Until the edges are granted every desk reads as unreachable - by design."
     enabled: true
   - id: open-loops
     name: "[open-loops] Receipts and gates"

@@ -23,7 +23,8 @@ and put its answer, labelled, in the ask's context.
 
 ## 2. One ask, atomic
 `mcp__trinity__ask_operator` with:
-- `request_id`: `<kind>-<slug>-<YYYY-MM-DD>` (stable; a retry replays, never duplicates)
+- `request_id`: `<kind>-<slug>-<YYYY-MM-DD>-<first 8 chars of your execution id>` (a retry in the
+  same run replays; a second decision on the same slug the same day is a new ask, never swallowed)
 - `type`: `approval` when there are options; `question` when there are not
 - `to`: `primary` (the principal) unless the canon names another role that exists on the instance
 - `title`: one line, under 100 characters

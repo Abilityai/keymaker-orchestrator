@@ -8,15 +8,17 @@ decisions to a person - once, with options and a deadline.
 
 ## Install
 
-1. On any Trinity 1.0 instance: **Create Agent → from GitHub → `Abilityai/keymaker-orchestrator`**
+1. On a Trinity instance running the 1.0 release candidate or later: **Create Agent → from GitHub → `Abilityai/keymaker-orchestrator`**
    (or Library → Agents → Keymaker Orchestrator). Name it `orchestrator`. No credentials.
 2. On its **Access** tab, grant it the desks it may call: `sales-agent`, `delivery-agent`,
    `marketing-agent`, `meeting-notes-bot`, `cornelius`. Only a person can grant an edge.
 3. Tag each desk `reports-to-orchestrator`; the Network view draws the org chart.
 4. Ask it: *"Who do you route to, and how do you decide?"* It reads `canon/owners.yaml` back.
 
-Or rebuild the whole agency from one file: `canon/system.yaml` in
-[`Abilityai/keymaker-canon`](https://github.com/Abilityai/keymaker-canon) with `deploy_system`.
+Or rebuild the whole agency from one file on a **fresh** instance: `canon/system.yaml` in
+[`Abilityai/keymaker-canon`](https://github.com/Abilityai/keymaker-canon) with `deploy_system`
+(it creates `keymaker-*` agents; on an instance that already runs the desks, use the Access tab
+instead or you get a second set).
 
 ## The canon
 
@@ -47,7 +49,7 @@ It never writes the canon. `/canon-change` prepares a proposal and raises an app
 
 | Schedule | When | Does |
 |---|---|---|
-| `[morning-brief]` | weekdays 07:30 ET | `/status --brief` - after the desks' own morning runs |
+| `[morning-brief]` | weekdays 07:30 ET | `/status --brief` - one line per desk, silence named |
 | `[open-loops]` | every 2 h | `/open-loops` |
 | `[canon-watch]` | daily 06:00 ET | `/map --check` - pulls the canon, reports drift |
 

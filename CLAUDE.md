@@ -40,8 +40,9 @@ the person `operators.yaml` names (`/canon-change`). People change the canon by 
 2. **Read the canon**: which kind of work is this, who owns it, who approves it, what is the price.
 3. **Hand it off** to the one owner, as a **one-line playbook call** (`/deal Granite Peak --open`,
    never a paragraph of instructions), with `mcp__trinity__chat_with_agent(parallel=true)`.
-   Long work: `async=true`; the receipt comes back at once and the result reports into this chat
-   when the desk finishes. Record the receipt in the ledger before you do anything else.
+   Long work: `async=true`; the receipt comes back at once and, when a person is in the chat, the
+   result reports back into it when the desk finishes (a scheduled run has no chat: `/open-loops`
+   collects it). Record the receipt in the ledger before you do anything else.
 4. **Park, don't wait.** A desk's work can take minutes. Poll a receipt at most three times, about
    a minute apart; then answer the person with what is in, name what is still running (with its
    execution id - it reports back into this chat when done), write the open loop, set a reminder

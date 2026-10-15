@@ -40,8 +40,9 @@ Examples:
 - "write the weekly report" → `marketing-agent`: `/weekly-report`
 - "summarise yesterday's call" → `meeting-notes-bot`: `/summarize <transcript file in its inbox/>` (the public template has only `/summarize`; some installs add `/process-inbox` - read its catalog)
 
-Playbooks the owner does not have are not called; read its catalog with `mcp__trinity__get_agent_skills`
-if unsure. Never describe the work in prose. Never send the same call twice.
+Playbooks the owner does not have are not called. `get_agent_skills` lists only library-assigned
+skills, so to learn a desk's own playbooks read the `commands:` block of its template
+(`mcp__trinity__get_agent_info`) or ask the desk in one line. Never describe the work in prose. Never send the same call twice.
 
 ## 4. Record the receipt before anything else
 

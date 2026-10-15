@@ -33,7 +33,7 @@ How to apply: edit the file on a branch, open a PR to the canon repo, merge; add
 ```
 
 ## 4. Raise the approval, once
-`mcp__trinity__ask_operator(request_id="canon-<slug>-<date>", type="approval", to="primary",
+`mcp__trinity__ask_operator(request_id="canon-<slug>-<date>-<first 8 of your execution id>", type="approval", to="primary",
 title="Canon change: <one line>", question=<before/after + why + what it touches>,
 options=["Approve - I will open the PR", "Decline"], proposal={...}, expires_at=<3 business days>)`.
 Record it in `ledger/open_loops.md`.
