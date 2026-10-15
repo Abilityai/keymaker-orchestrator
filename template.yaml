@@ -1,0 +1,106 @@
+# Keymaker Orchestrator - a Trinity agent template
+# Part of the Keymaker agency starter set (keymaker.agency), built in public during the
+# Agent-Native Agency workshop series. Public, zero-credential. Apache 2.0.
+name: keymaker-orchestrator
+display_name: "Keymaker Orchestrator"
+description: |
+  The one agent you talk to in Keymaker, an agency that sets up automation on Trinity for
+  other companies. It holds the map, not the work: it reads the agency's canon (who owns which
+  kind of work, who approves what, what things cost), hands each request to the one desk that
+  owns it, keeps a receipt for every hand-off, checks "done" against evidence, and brings the
+  decisions only a person can make to that person - once, with options and a deadline.
+
+  It never does a desk's work, never writes a desk's files, and never edits the canon. Zero
+  credentials: the platform gives it its connection to the other agents; a person grants each
+  edge on the Access tab. Reads the canon from a public repo it clones at start
+  (Abilityai/keymaker-canon - use the template to make your own).
+tagline: "One agent to route them all. Reads the canon, keeps the receipts, asks a person."
+version: "0.1.0"
+author: "Keymaker (keymaker.agency)"
+
+resources:
+  cpu: "1"
+  memory: "2g"
+
+avatar_prompt: >
+  A calm chief of staff at a standing desk with a wall map of the agency's departments behind
+  them, one hand on a stack of receipts, warm lamp light, photographic.
+
+use_cases:
+  - "A new lead: Granite Peak Accounting, 25 people, wants help automating client onboarding. Handle it."
+  - "Brightline wants 15% off the Build. Can we do it?"
+  - "What needs me today? Ask every department."
+  - "Change the Build price to $45K."
+  - "Who do you route to, and how do you decide?"
+
+capabilities:
+  - request-routing
+  - receipt-ledger
+  - approval-escalation
+  - canon-reading
+  - morning-brief
+
+commands:
+  - name: route
+    description: Read the canon, hand a request to its one owner, keep the receipt
+    usage: /route <the request>
+  - name: status
+    description: Ask every desk what needs a person, in parallel; one summary; name who did not answer
+    usage: /status [--brief]
+  - name: escalate
+    description: Raise one decision to the person the canon names, with options and an expiry
+    usage: /escalate <the decision> [--now]
+  - name: canon-change
+    description: Prepare a change to the canon as a proposal; never write the canon
+    usage: /canon-change <what should change>
+  - name: map
+    description: Read the routing map back, and check every owner is a running agent you may call
+    usage: /map [--check]
+  - name: open-loops
+    description: Check every receipt in the ledger, close what finished, chase what expired
+    usage: /open-loops
+
+folders:
+  expose: true     # ledger/ and proposals/ readable by the agency's other agents and people
+  consume: true    # reads what the desks expose
+
+credentials: {}
+
+# The canon is read from canon/, cloned on every container start by .trinity/setup.sh.
+# The numbers this agent owns: how routing itself is doing.
+metrics:
+  - name: requests_routed_week
+    type: counter
+    description: Requests handed to an owner with a receipt this week
+  - name: open_loops
+    type: gauge
+    description: Hand-offs without a verified result
+  - name: asks_pending
+    type: gauge
+    description: Decisions waiting on a person
+  - name: desks_silent_last_brief
+    type: gauge
+    description: Desks that did not answer the last morning brief
+
+schedules:
+  - id: morning-brief
+    name: "[morning-brief] What needs a person today"
+    cron: "30 7 * * 1-5"
+    timezone: "America/New_York"
+    message: "/status --brief"
+    description: "Every weekday after the desks' own morning runs: one brief for the principal, one line per desk, silence named."
+    enabled: true
+  - id: open-loops
+    name: "[open-loops] Receipts and gates"
+    cron: "15 */2 * * *"
+    timezone: "UTC"
+    message: "/open-loops"
+    description: "Every two hours: verify finished hand-offs against evidence, chase expired asks, keep the ledger true."
+    enabled: true
+  - id: canon-watch
+    name: "[canon-watch] Pull the canon, check the map"
+    cron: "0 6 * * *"
+    timezone: "America/New_York"
+    message: "/map --check"
+    description: "Daily: pull the canon, report what changed, and report any owner that is not a running agent this orchestrator may call."
+    enabled: true

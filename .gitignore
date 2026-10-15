@@ -1,0 +1,9 @@
+# the canon is cloned at start, never committed here
+canon/
+# runtime
+ledger/*.jsonl
+ledger/open_loops.md
+proposals/*.md
+!proposals/README.md
+.env
+__pycache__/
