@@ -27,12 +27,15 @@ sections:
   - title: "Where to look"
     layout: list
     widgets:
-      - type: links
-        id: links
-        items:
-          - label: "The canon (what the agency decided)"
-            url: "https://github.com/Abilityai/keymaker-canon"
-          - label: "Ledger of receipts"
-            url: "ledger/receipts.jsonl"
-          - label: "Open loops"
-            url: "ledger/open_loops.md"
+      - type: link
+        id: canon_link
+        label: "The canon (what the agency decided)"
+        url: "https://github.com/Abilityai/keymaker-canon"
+      - type: link
+        id: receipts_link
+        label: "Ledger of receipts"
+        url: "ledger/receipts.jsonl"
+      - type: link
+        id: open_loops_link
+        label: "Open loops"
+        url: "ledger/open_loops.md"
