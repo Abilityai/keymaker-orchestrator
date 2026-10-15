@@ -19,11 +19,14 @@ lessons-and-judgment). If it mentions a price, also `python3 scripts/canon.py pr
 `deals` for Sales **and** `lessons-and-judgment` for the brain). If no kind matches: do not guess
 an owner - one question to the principal (`/escalate`), then stop.
 
-## 2. Check the owner is idle
+## 2. Check the owner is idle - only for work that writes
 
+For a playbook that changes the owner's files (open a deal, move a client, stage notes):
 `mcp__trinity__list_recent_executions(<owner>, status="running")`. If something is running, append
 a `queued` row to `ledger/receipts.jsonl`, write the loop in `ledger/open_loops.md`, set a reminder
 (`mcp__trinity__set_reminder`, 10 minutes, naming the request) and end the turn.
+**Read-only calls skip this step**: the brain's `/advise` `/recall` `/decide`, and any status question.
+They run as stateless parallel tasks and cannot collide with anything.
 
 ## 3. Hand it off - one line, one owner
 

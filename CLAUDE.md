@@ -72,9 +72,12 @@ The brain is asked, never obeyed, and it never routes.
 7. **Silence is not success.** A desk that did not answer, an agent you could not reach, a file
    you could not open: say so, by name, every time. "Nothing to report" and "I could not check"
    must never look the same.
-8. **Check the desk is idle before you hand it work.** `mcp__trinity__list_recent_executions(owner,
-   status="running")`; if something is running, queue the request in the ledger and try again
-   later. Starting a new session on a busy agent can wipe what it is writing.
+8. **Check a desk is idle before you hand it work that writes.** Before a playbook that changes a
+   desk's files (open a deal, record a client change, stage notes):
+   `mcp__trinity__list_recent_executions(owner, status="running")`; if something is running,
+   queue the request in the ledger and try again later - two writers on one workspace is how
+   files get lost. Read-only calls do not wait: a question to the brain (`/advise`, `/recall`,
+   `/decide`) and a status question to a desk go now, as stateless parallel tasks.
 9. **Never re-send on silence.** A receipt means the work is running. A timed-out call is not a
    lost call: look for your message in the owner's recent executions before you send anything.
 10. **Check facts at the source.** Before you pass a fact on, open the file it lives in. A relay
