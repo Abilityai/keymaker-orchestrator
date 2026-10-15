@@ -30,8 +30,9 @@ a `queued` row to `ledger/receipts.jsonl`, write the loop in `ledger/open_loops.
 Call the owner's **named playbook**, one line, no preamble, with
 `mcp__trinity__chat_with_agent(agent_name=<owner>, message="/<playbook> <args>", parallel=true, async=true)`.
 Examples:
-- a new lead → `sales-agent`: `/deal Granite Peak Accounting --open --source marketing --note "25 people, client onboarding"`
-  and in the same turn → `cornelius`: `/advise a 25-person accounting firm asks for help automating client onboarding; what have we learned about firms like this before the discovery call?`
+- a new lead → `sales-agent`: `/deal Copperleaf Veterinary Group --open --source inbound --note "40 people, appointment reminders and intake"`
+  and in the same turn → `cornelius`: `/advise a 40-person veterinary group asks for help automating reminders and intake; what have we learned about clinics and intake work before the discovery call?`
+  If Sales answers that the deal already exists, say so with its stage - never open it twice.
 - "how is Cedar Point" → `delivery-agent`: `/client-status Cedar Point Clinics`
 - "write the weekly report" → `marketing-agent`: `/weekly-report`
 - "summarise yesterday's call" → `meeting-notes-bot`: `/process-inbox`
