@@ -38,7 +38,7 @@ Examples:
   If Sales answers that the deal already exists, say so with its stage - never open it twice.
 - "how is Cedar Point" → `delivery-agent`: `/client-status Cedar Point Clinics`
 - "write the weekly report" → `marketing-agent`: `/weekly-report`
-- "summarise yesterday's call" → `meeting-notes-bot`: `/process-inbox`
+- "summarise yesterday's call" → `meeting-notes-bot`: `/summarize <transcript file in its inbox/>` (the public template has only `/summarize`; some installs add `/process-inbox` - read its catalog)
 
 Playbooks the owner does not have are not called; read its catalog with `mcp__trinity__get_agent_skills`
 if unsure. Never describe the work in prose. Never send the same call twice.

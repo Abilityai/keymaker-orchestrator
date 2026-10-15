@@ -142,11 +142,21 @@ def cmd_people():
 
 
 def cmd_price(offer):
+    """Match on the Offer column only (never on the description), exact name first, then a
+    name that starts with or contains the query - so 'Build' is the Build row, not the audit
+    whose description says 'rebuild'."""
+    rows = []
     for line in load("pricing.md").splitlines():
-        if line.startswith("|") and offer.lower() in line.lower():
+        if line.startswith("|") and not line.startswith("|--") and "Offer" not in line.split("|")[1]:
             cells = [c.strip() for c in line.strip("|").split("|")]
-            print(json.dumps({"offer": cells[0], "price": cells[2], "notes": cells[3] if len(cells) > 3 else ""}, indent=2)); return
-    print(json.dumps({"offer": offer, "price": "[NEEDS-PRICE-LIST]"}, indent=2))
+            if len(cells) >= 3:
+                rows.append(cells)
+    q = offer.lower().strip()
+    for test in (lambda n: n == q, lambda n: n.startswith(q), lambda n: q in n):
+        for cells in rows:
+            if q and test(cells[0].lower()):
+                print(json.dumps({"offer": cells[0], "price": cells[2], "notes": cells[3] if len(cells) > 3 else ""}, indent=2)); return
+    print(json.dumps({"offer": offer, "price": "[NEEDS-PRICE-LIST]", "offers": [r[0] for r in rows]}, indent=2))
 
 
 def cmd_flows():
