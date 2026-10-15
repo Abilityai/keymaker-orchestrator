@@ -5,5 +5,19 @@ ledger/*.jsonl
 ledger/open_loops.md
 proposals/*.md
 !proposals/README.md
+# platform-injected and session state
 .env
+.mcp.json
+.trinity/*
+!.trinity/setup.sh
+.claude/projects/
+.claude/statsig/
+.claude/todos/
+.claude/debug/
+.claude/sessions/
+.claude/shell-snapshots/
+content/
+*.pem
+*.key
+credentials.json
 __pycache__/
