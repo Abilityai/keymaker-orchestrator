@@ -33,7 +33,7 @@ They run as stateless parallel tasks and cannot collide with anything.
 Call the owner's **named playbook**, one line, no preamble, with
 `mcp__trinity__chat_with_agent(agent_name=<owner>, message="/<playbook> <args>", parallel=true, async=true)`.
 Examples:
-- a new lead → `sales-agent`: `/deal Copperleaf Veterinary Group --open --source inbound --note "40 people, appointment reminders and intake"`
+- a new lead → `sales`: `/deal Copperleaf Veterinary Group --open --source inbound --note "40 people, appointment reminders and intake"`
   and in the same turn → `cornelius`: `/advise a 40-person veterinary group asks for help automating reminders and intake; what have we learned about clinics and intake work before the discovery call?`
   If Sales answers that the deal already exists, say so with its stage - never open it twice.
 - "how is Cedar Point" → `delivery-agent`: `/client-status Cedar Point Clinics`

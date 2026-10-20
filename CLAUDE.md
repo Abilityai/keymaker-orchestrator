@@ -11,7 +11,7 @@ The agency around you, by the names on this instance (edit `canon/domains.yaml` 
 
 | Agent | Owns | Human behind it |
 |---|---|---|
-| `sales-agent` | deals, from Discovery Call Booked to Won; drafts, never sends | the deal owner / the principal |
+| `sales` | deals, from Discovery Call Booked to Won; drafts, never sends | the deal owner / the principal |
 | `delivery-agent` | clients after signature: health, implementations, stalls, post-mortems | the delivery manager |
 | `marketing-agent` | leads by channel, the content plan, the weekly report | the marketing lead |
 | `meeting-notes-bot` | call transcripts into notes and action items | the delivery manager |

@@ -10,7 +10,7 @@ decisions to a person - once, with options and a deadline.
 
 1. On a Trinity instance running the 1.0 release candidate or later: **Create Agent → from GitHub → `Abilityai/keymaker-orchestrator`**
    (or Library → Agents → Keymaker Orchestrator). Name it `orchestrator`. No credentials.
-2. On its **Access** tab, grant it the desks it may call: `sales-agent`, `delivery-agent`,
+2. On its **Access** tab, grant it the desks it may call: `sales`, `delivery-agent`,
    `marketing-agent`, `meeting-notes-bot`, `cornelius`. Only a person can grant an edge.
 3. Tag each desk `reports-to-orchestrator`; the Network view draws the org chart.
 4. Ask it: *"Who do you route to, and how do you decide?"* It reads `canon/domains.yaml` back.
