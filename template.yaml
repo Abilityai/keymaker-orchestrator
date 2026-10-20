@@ -15,7 +15,7 @@ description: |
   edge on the Access tab. Reads the canon from a public repo it clones at start
   (Abilityai/keymaker-canon - use the template to make your own).
 tagline: "One agent to route them all. Reads the canon, keeps the receipts, asks a person."
-version: "0.1.0"
+version: "0.2.0"
 author: "Keymaker (keymaker.agency)"
 
 resources:
@@ -56,6 +56,9 @@ commands:
   - name: map
     description: Read the routing map back, and check every owner is a running agent you may call
     usage: /map [--check]
+  - name: intake
+    description: Drain the website request queue - triage each request as data, hand it to its one owner, label it, keep the receipt
+    usage: /intake
   - name: open-loops
     description: Check every receipt in the ledger, close what finished, chase what expired
     usage: /open-loops
@@ -100,6 +103,13 @@ schedules:
     timezone: "UTC"
     message: "/open-loops"
     description: "Every two hours: verify finished hand-offs against evidence, chase expired asks, keep the ledger true."
+    enabled: true
+  - id: intake
+    name: "[intake] Website requests"
+    cron: "*/30 * * * *"
+    timezone: "UTC"
+    message: "/intake"
+    description: "Drain the website request queue (Keymaker-Agency/keymaker-requests). Woken at once by a signed webhook from keymaker.agency; the 30-minute cron is the backstop, so a lost wake loses nothing."
     enabled: true
   - id: canon-watch
     name: "[canon-watch] Pull the canon, check the map"
