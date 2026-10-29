@@ -51,11 +51,15 @@ name exists already, stop - report its status and `/vault check`, create nothing
 
 ```
 mcp__trinity__create_agent(name=<name>, template=<source>)
-mcp__trinity__set_agent_tags(name=<name>, tags=["keymaker", "reports-to-orchestrator"])
+mcp__trinity__set_agent_tags(name=<name>, tags=["keymaker"])
 mcp__trinity__start_agent(name=<name>)
 ```
 
 `create_agent` returns the agent stopped; `start_agent` boots it (the start hook clones the canon).
+The `reports-to-orchestrator` badge is **human-only** (`dept-*` and `reports-to-*` tags answer 403
+from an agent key - verified 2026-10-29): set only `keymaker`, and put the badge on the principal's
+list. If the Library card is not in `list_templates` yet (the registry syncs behind a push), pass
+the repo ref `github:Owner/repo` to `create_agent` - a public repo on `main` is enough - and say so.
 Poll `mcp__trinity__get_agent(<name>)` until `status: running` (give it three minutes), then
 `mcp__trinity__get_agent_compatibility_report(<name>)` - report the HARD count; a HARD finding is
 in the receipt, not fixed by you. `mcp__trinity__list_agent_schedules(<name>)` - the template's
@@ -77,12 +81,13 @@ Then build the checklist from the canon and the template - never from memory:
 - **Autonomy**: ON, on the agent's page - until then every schedule is held.
 - **Delivery**: for each materialised schedule, who should receive it (`domains.yaml` role ->
   ORGANISATION.md person), set by the person on the Schedules tab.
-- **Owner**: on open source the approvals of a desk land in its owner's Inbox; the owner is whoever
-  created it - you. **Say so**: the principal re-owns it or shares it with the seat-holder, or the
-  desk's asks will come to the orchestrator's owner.
+- **Owner and badge**: on open source the approvals of a desk land in its owner's Inbox; the owner
+  is whoever created it - you. **Say so**: the principal re-owns it or shares it with the
+  seat-holder, or the desk's asks will come to the orchestrator's owner. Same line: add the tag
+  `reports-to-orchestrator` (human-only).
 
 Raise it once: `mcp__trinity__ask_operator(type="approval", request_id="hire-<name>-<date>",
-question="<name> is created and running. Five things only you can do:", proposal=<the checklist>,
+question="<name> is created and running. What only you can do:", proposal=<the checklist>,
 options=["done", "not now"], expires_at=<72h>)`. Then **end the turn**. `/open-loops` reads the
 answer; `/map --check` and `/vault check <name>` verify the edges and keys landed; the morning
 brief names the desk until they do.
