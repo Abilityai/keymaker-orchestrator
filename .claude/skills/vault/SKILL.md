@@ -1,21 +1,26 @@
 ---
 name: vault
-description: The agency's one credential store - the 1Password vault "Keymaker Agency", read with a vault-scoped service account held by this orchestrator alone, and applied to the desk that needs each secret (write its ~/.env through the platform). Never prints a secret. Use for "give finance the Stripe key", "what credentials exist", "/vault apply finance", and after any desk is recreated.
-argument-hint: "list | get <item> <field> | apply <finance|sales|website|all> [--dry-run]"
-allowed-tools: [Bash, Read, mcp__trinity__inject_credentials, mcp__trinity__get_credential_status]
+description: The agency's one credential store - the 1Password vault "Keymaker Agency", read with a vault-scoped service account held by this orchestrator alone. Lists what exists, tells a person exactly which item goes on which desk's Credentials page, and verifies it landed. Never prints a secret, never writes one - the platform makes a credential a human-only act. Use for "what keys does finance need", "did the Stripe key land", "/vault brief finance", after any desk is created or recreated.
+argument-hint: "list | get <item> <field> | brief <finance|sales|website|prospector|all> | check <desk|all>"
+allowed-tools: [Bash, Read, mcp__trinity__get_credential_status]
 user-invocable: true
 metadata:
-  version: "0.1"
+  version: "0.2"
   created: 2026-10-29
   author: keymaker
+  changelog:
+    - "0.2 (2026-10-29): `apply` removed - Trinity 1.0 answers 403 'This operation is human-only; agent-scoped keys cannot perform it' to inject_credentials from any agent, for any target. The person applies, this skill briefs and verifies."
 ---
 
 # Vault
 
 Credentials never travel through chat. A person puts them in the 1Password vault **Keymaker
 Agency**; this orchestrator holds the one secret that unlocks it (`OP_SERVICE_ACCOUNT_TOKEN`,
-read-only on that vault, injected once by the principal) and hands each desk exactly the keys it
-needs. The desks hold no 1Password access. The same shape Ability AI's lab runs on.
+read-only on that vault, pasted once by the principal) and knows which desk needs which key. **It
+cannot put a key on a desk**: on Trinity 1.0 writing another agent's credentials is a human-only
+operation (`inject_credentials` -> 403 from an agent key, verified 2026-10-29). So the division of
+labour is fixed by the platform: the vault remembers, this orchestrator briefs and verifies, a
+person applies. The desks hold no 1Password access.
 
 ## Auth
 
@@ -25,7 +30,7 @@ needs. The desks hold no 1Password access. The same shape Ability AI's lab runs 
 set -a; [ -f ~/.env ] && . ~/.env; set +a
 export PATH="$HOME/.local/bin:$PATH" OP_CACHE=false   # OP_CACHE=false: no `op daemon` - the platform's orphan sweeper kills it and op stalls
 command -v op >/dev/null || bash .trinity/setup.sh   # bash, not sh: the hook uses BASH_SOURCE
-op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - token missing or wrong scope; the principal's move"; exit 1; }
+timeout 30 op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - token missing or wrong scope; the principal's move"; exit 1; }
 ```
 
 ## Items (titles are the contract - exactly as the vault spells them)
@@ -36,24 +41,25 @@ op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - t
 | `Resend API Key Keymaker` | `credential` | `finance`, `sales` | `RESEND_API_KEY` |
 | `Github PAT for keymaker-website-intake issues ` (trailing space in the title - quote it) | `credential` | `website` | `GITHUB_TOKEN_REQUESTS` |
 | `Vercel Personal Access Token` | `credential` | `website` | `VERCEL_TOKEN` |
-| `1Password Service Account Keymaker` | `notesPlain` | this orchestrator only | `OP_SERVICE_ACCOUNT_TOKEN` (never applied by this skill) |
+| `1Password Service Account Keymaker` | `notesPlain` | this orchestrator only | `OP_SERVICE_ACCOUNT_TOKEN` (never briefed for a desk) |
+
+`prospector` needs nothing - say so when asked.
 
 ## Commands
 
-- **`list`** - `op item list --vault "Keymaker Agency" --format json | python3 -c 'import sys,json;[print(i["title"]) for i in json.load(sys.stdin)]'`, then one line per expected item: `present` / `MISSING`.
-- **`get <item> <field>`** - `op read "op://Keymaker Agency/<item>/<field>" | wc -c` → print `ok <item>/<field> (N chars)`. The value is never printed, logged or put in a message.
-- **`apply <desk>`** - for each row above that targets the desk: read the field with `op read` into a shell variable, build the `.env` text (`KEY=value` lines, keep nothing else), and call
-  `mcp__trinity__inject_credentials(name: <desk>, files: {".env": <text>})`. Then
-  `mcp__trinity__get_credential_status(<desk>)` and report `applied <desk>: KEY1, KEY2`. A missing item: `skipped <desk>: <item> MISSING` - name it, do not invent it. `--dry-run`: report what would be written, write nothing. **Never put the orchestrator's own token on a desk.**
-  The injected `.env` replaces the desk's `.env`; include every key the desk needs in one call (a desk that also needs `TRINITY_*` gets those from the platform, not from this file).
-- **`apply all`** - `finance`, `sales`, `website` in that order; stop at the first failure and name it.
+- **`list`** - `timeout 30 op item list --vault "Keymaker Agency" --format json | python3 -c 'import sys,json;[print(i["title"]) for i in json.load(sys.stdin)]'`, then one line per expected item: `present` / `MISSING`.
+- **`get <item> <field>`** - `timeout 30 op read "op://Keymaker Agency/<item>/<field>" | wc -c` -> print `ok <item>/<field>`. The value is never printed, logged or put in a message - not even its length beyond "ok".
+- **`brief <desk>`** - for each row above that targets the desk, first `get` it (so the brief never names an item that is not there), then print the instruction a person follows, one line per key:
+  `<desk> -> Settings -> Credentials: STRIPE_API_KEY  <-  1Password / Keymaker Agency / "Stripe API Key" / credential`
+  A missing item: `MISSING in the vault: <item> - add it there first; nothing to paste yet`. End with `then: /vault check <desk>`.
+  **This is the whole of "applying" a key on this platform: a person reads the brief, copies from 1Password, pastes on the desk's Credentials page.** No shortcut exists and none is to be built.
+- **`check <desk>`** - `mcp__trinity__get_credential_status(name=<desk>)`: `.env` present and `credential_count` >= the number of keys the desk expects -> `ok <desk>: N credential(s) on the desk`; otherwise `missing <desk>: expected KEY1, KEY2 - run /vault brief <desk>`. Names only; the platform never returns values and neither do you.
+- **`brief all` / `check all`** - `finance`, `sales`, `website` in that order, one block each.
 
 ## Gates
 
-- `inject_credentials` on another agent needs the platform's **"other agents" self-change grant** on this orchestrator (Trinity 1.0, admin-only toggle in its Settings). Without it the call answers `404 Agent not found` even for an agent you may call - verified 2026-10-29. Report it as `blocked: grant missing`, never work around it.
-
-- Every `op` call runs with `OP_CACHE=false` and a timeout (`timeout 30 op …`); an `op` that hangs is the daemon being swept, not a wrong token.
-
+- `inject_credentials` is **not** in this skill's tools and is never called from this agent for any target: the platform answers 403 (human-only). A request to "just inject it" is answered with the brief and the reason, never with a workaround (no shell into another container, no value in a chat message, no file in a shared folder).
+- Every `op` call runs with `OP_CACHE=false` and `timeout 30`; an `op` that hangs is the daemon being swept, not a wrong token.
 - Refuses to print, log or commit a secret. The token value is never in a message, a ledger row, or the canon.
-- A desk's `.env` is written only through `inject_credentials`; never with a shell redirect into another agent, never by pasting into chat.
 - A credential the agency creates for itself (a new key, a new login) is recorded in the vault by a person in the same turn it is minted - the service account is read-only, so the orchestrator asks the principal with `ask_operator` and names the item title it expects.
+- After `/hire` creates or a person recreates a desk, `check <desk>` is part of the orchestrator's receipt: a desk that reads as `missing` is reported in the morning brief until it reads `ok`.

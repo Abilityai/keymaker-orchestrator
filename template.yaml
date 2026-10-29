@@ -63,15 +63,19 @@ commands:
     description: Check every receipt in the ledger, close what finished, chase what expired
     usage: /open-loops
   - name: vault
-    description: Read the agency's 1Password vault with the orchestrator's service account and hand each desk the keys it needs; never prints a secret
-    usage: /vault list | get <item> <field> | apply <desk|all> [--dry-run]
+    description: Read the agency's 1Password vault with the orchestrator's service account; brief a person on which item goes on which desk, verify it landed; never prints or writes a secret
+    usage: /vault list | get <item> <field> | brief <desk|all> | check <desk|all>
+  - name: hire
+    description: Add a desk the standard way - canon first, agent from the Library or a repo, one checklist to the principal for edges, autonomy, keys and delivery
+    usage: /hire <desk|github:Owner/repo> [--as <name>] | --brief "<paragraph>"
 
 shared_folders:
   expose: true     # ledger/ and proposals/ readable by the agency's other agents and people
   consume: true    # reads what the desks expose
 
 # One secret, held by the orchestrator alone: a read-only 1Password service account on the agency's
-# vault. /vault reads every other key from there and injects it into the desk that needs it.
+# vault. /vault reads it to brief a person on which key goes where and to verify it landed;
+# writing a key onto a desk is human-only on Trinity 1.0.
 credentials:
   env_file:
     - OP_SERVICE_ACCOUNT_TOKEN
