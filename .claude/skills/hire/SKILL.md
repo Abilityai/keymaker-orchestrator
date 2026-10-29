@@ -40,8 +40,12 @@ PR is merged and `canon.py owners` shows the desk, `/hire` runs.
 | `github:Owner/repo` | that repo, as given - the agency's own agents (a migrated notes bot, a desk built from the wizard) come in this way |
 | `--brief "<paragraph>"` | the **Agent Builder**: `agent-builder` must exist on the instance (if not, hire it first - `/hire github:Abilityai/agent-builder --as agent-builder` - and stop; the principal grants `orchestrator -> agent-builder` before you can use it). Then one line: `mcp__trinity__chat_with_agent(agent_name="agent-builder", message="/build-agent <brief> --no-deploy", parallel=true)` and report its repo back. The brief still goes through step 0 first: the builder scaffolds the agent, the canon says why it exists. |
 
-The agent's name is `--as <name>` or, for a desk, the desk name. `mcp__trinity__list_agents`: if
-the name exists already, stop - report its status and `/vault check`, create nothing.
+The agent's name is **always the owner name the canon gives the domain** (step 0). For a desk that
+is the desk name; for a `github:` ref or a brief, `--as <name>` says which canon owner this source
+fulfils, and must match one - `--as` never invents a name, and there is no "rehearsal name": a desk
+under a name the map does not route to is unroutable by construction, and you cannot delete it.
+A rehearsal is the real hire, deleted afterwards by a person. `mcp__trinity__list_agents`: if the
+name exists already, stop - report its status and `/vault check`, create nothing.
 
 ## 2. Create, badge, start
 
