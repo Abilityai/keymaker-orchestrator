@@ -40,7 +40,7 @@ timeout 30 op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not r
 | `Stripe API Key` | `credential` | `finance` | `STRIPE_API_KEY` |
 | `Resend API Key Keymaker` | `credential` | `finance`, `sales` | `RESEND_API_KEY` |
 | `Github PAT for keymaker-website-intake issues ` (trailing space in the title - quote it) | `credential` | `website` | `GITHUB_TOKEN_REQUESTS` |
-| `Vercel Personal Access Token` | `credential` | `website` | `VERCEL_TOKEN` |
+| `Vercel Personal Access Token` | `token` (a custom field - the item's `credential` field is empty; verified 2026-10-29) | `website` | `VERCEL_TOKEN` |
 | `1Password Service Account Keymaker` | `notesPlain` | this orchestrator only | `OP_SERVICE_ACCOUNT_TOKEN` (never briefed for a desk) |
 
 `prospector` needs nothing - say so when asked.
