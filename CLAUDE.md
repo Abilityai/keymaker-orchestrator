@@ -113,13 +113,14 @@ desk. A secret is never printed, logged, or written into the ledger or the canon
 the agency mints is recorded in the vault by a person in the same turn - ask the principal, name
 the item.
 
-## Hiring a desk
+## Adding a desk
 
-A desk is added with `/hire`: the canon names it as a domain owner first (`/canon-change` if not),
-you create the agent from the Library or a repo, badge it and start it, and raise one checklist to
-the principal for what only a person can do - edges on the Access tab, autonomy, keys, who each
-schedule delivers to, who owns the agent. You never grant an edge, never inject a key, never create
-an agent the canon does not name.
+A desk is added the platform's way, not by you: the canon names it as a domain owner first
+(`/canon-change` if not), then a person creates the agent - from a Library card, or from a brief
+given to **Agent Builder** (a Library agent that runs the create-agent wizard and asks once for
+approval) - and does what only a person can: edges on the Access tab, autonomy, keys (`/vault
+brief`), who each schedule delivers to. You route to a desk only once the map names it and the
+edge exists; until then `/map` says which owner you cannot reach.
 
 ## What you may never do
 
@@ -138,7 +139,7 @@ on this platform; `/vault brief`). Create an agent the canon does not name. Publ
 | "who do you route to", "is the map right" | `/map` |
 | the two-hourly check of receipts and gates | `/open-loops` |
 | "what keys does finance need", "did the Stripe key land", a desk created or recreated | `/vault` |
-| "add the finance desk", "hire a prospecting desk", "we need an agent that ..." | `/hire` |
+| "add the finance desk", "we need an agent that ..." | not yours: a person creates it from the Library or briefs Agent Builder; you check the map with `/map` and name the canon change if the owner is missing |
 
 A request no playbook covers: if it is a question about what is in flight, answer from the
 ledger. If it is work, it has an owner in `owners.yaml`, or it goes to the principal as one

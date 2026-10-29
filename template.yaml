@@ -65,9 +65,6 @@ commands:
   - name: vault
     description: Read the agency's 1Password vault with the orchestrator's service account; brief a person on which item goes on which desk, verify it landed; never prints or writes a secret
     usage: /vault list | get <item> <field> | brief <desk|all> | check <desk|all>
-  - name: hire
-    description: Add a desk the standard way - canon first, agent from the Library or a repo, one checklist to the principal for edges, autonomy, keys and delivery
-    usage: /hire <desk|github:Owner/repo> [--as <name>] | --brief "<paragraph>"
 
 shared_folders:
   expose: true     # ledger/ and proposals/ readable by the agency's other agents and people
