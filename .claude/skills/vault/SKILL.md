@@ -23,6 +23,7 @@ needs. The desks hold no 1Password access. The same shape Ability AI's lab runs 
 
 ```bash
 set -a; [ -f ~/.env ] && . ~/.env; set +a
+export PATH="$HOME/.local/bin:$PATH" OP_CACHE=false   # OP_CACHE=false: no `op daemon` - the platform's orphan sweeper kills it and op stalls
 command -v op >/dev/null || sh .trinity/setup.sh
 op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - token missing or wrong scope; the principal's move"; exit 1; }
 ```
@@ -48,6 +49,8 @@ op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - t
 - **`apply all`** - `finance`, `sales`, `website` in that order; stop at the first failure and name it.
 
 ## Gates
+
+- Every `op` call runs with `OP_CACHE=false` and a timeout (`timeout 30 op …`); an `op` that hangs is the daemon being swept, not a wrong token.
 
 - Refuses to print, log or commit a secret. The token value is never in a message, a ledger row, or the canon.
 - A desk's `.env` is written only through `inject_credentials`; never with a shell redirect into another agent, never by pasting into chat.

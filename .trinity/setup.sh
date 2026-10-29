@@ -28,3 +28,5 @@ if ! command -v op >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/op" ]; then
     || echo "op: install FAILED - /vault cannot run until it is present"
 fi
 export PATH="$HOME/.local/bin:$PATH"
+# op spawns a cache daemon on every call; Trinity's orphan sweeper SIGKILLs it and op stalls. No daemon:
+export OP_CACHE=false
