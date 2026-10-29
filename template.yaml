@@ -62,12 +62,27 @@ commands:
   - name: open-loops
     description: Check every receipt in the ledger, close what finished, chase what expired
     usage: /open-loops
+  - name: vault
+    description: Read the agency's 1Password vault with the orchestrator's service account and hand each desk the keys it needs; never prints a secret
+    usage: /vault list | get <item> <field> | apply <desk|all> [--dry-run]
 
 shared_folders:
   expose: true     # ledger/ and proposals/ readable by the agency's other agents and people
   consume: true    # reads what the desks expose
 
-credentials: {}
+# One secret, held by the orchestrator alone: a read-only 1Password service account on the agency's
+# vault. /vault reads every other key from there and injects it into the desk that needs it.
+credentials:
+  env_file:
+    - OP_SERVICE_ACCOUNT_TOKEN
+
+credential_setup:
+  - name: OP_SERVICE_ACCOUNT_TOKEN
+    title: 1Password service account (read-only, agency vault)
+    description: A service-account token scoped to read the agency's 1Password vault. Leave empty and /vault refuses; every desk then gets its keys by hand.
+    required: false
+    secret: true
+    format: secret
 
 # The canon is read from canon/, cloned on every container start by .trinity/setup.sh.
 # The numbers this agent owns: how routing itself is doing.

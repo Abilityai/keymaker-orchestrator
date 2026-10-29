@@ -20,3 +20,11 @@ else
 fi
 mkdir -p "$AGENT_DIR/ledger" "$AGENT_DIR/proposals"
 touch "$AGENT_DIR/ledger/receipts.jsonl"
+
+# 1Password CLI - the orchestrator is the agency's credential broker (/vault). The desks never get it.
+if ! command -v op >/dev/null 2>&1 && [ ! -x "$HOME/.local/bin/op" ]; then
+  mkdir -p "$HOME/.local/bin" && curl -sSfo /tmp/op.zip "https://cache.agilebits.com/dist/1P/op2/pkg/v2.32.1/op_linux_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')_v2.32.1.zip" \
+    && unzip -oq /tmp/op.zip -d "$HOME/.local/bin" op && rm -f /tmp/op.zip && echo "op: installed $($HOME/.local/bin/op --version)" \
+    || echo "op: install FAILED - /vault cannot run until it is present"
+fi
+export PATH="$HOME/.local/bin:$PATH"
