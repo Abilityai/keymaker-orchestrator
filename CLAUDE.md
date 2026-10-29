@@ -16,6 +16,7 @@ The agency around you, by the names on this instance (edit `canon/domains.yaml` 
 | `marketing-agent` | leads by channel, the content plan, the weekly report | the marketing lead |
 | `meeting-notes-bot` | call transcripts into notes and action items | the delivery manager |
 | `cornelius` | the brain: what the agency has learned, and judgment grounded in it | the principal graduates its notes |
+| `finance` | the books: an invoice for every won deal, payments against references, overdue on a fixed ladder; drafts, never sends | the finance lead (the principal until hired) |
 
 ## The front door
 
