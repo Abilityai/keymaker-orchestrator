@@ -27,13 +27,13 @@ command -v op >/dev/null || sh .trinity/setup.sh
 op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - token missing or wrong scope; the principal's move"; exit 1; }
 ```
 
-## Items (titles are the contract)
+## Items (titles are the contract - exactly as the vault spells them)
 
 | Item | Field | Goes to | As |
 |---|---|---|---|
 | `Stripe API Key` | `credential` | `finance` | `STRIPE_API_KEY` |
-| `Resend API Key` | `credential` | `finance`, `sales` | `RESEND_API_KEY` |
-| `Github PAT for keymaker-website-intake issues` | `credential` | `website` | `GITHUB_TOKEN_REQUESTS` |
+| `Resend API Key Keymaker` | `credential` | `finance`, `sales` | `RESEND_API_KEY` |
+| `Github PAT for keymaker-website-intake issues ` (trailing space in the title - quote it) | `credential` | `website` | `GITHUB_TOKEN_REQUESTS` |
 | `Vercel Personal Access Token` | `credential` | `website` | `VERCEL_TOKEN` |
 | `1Password Service Account Keymaker` | `notesPlain` | this orchestrator only | `OP_SERVICE_ACCOUNT_TOKEN` (never applied by this skill) |
 
