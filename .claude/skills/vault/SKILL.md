@@ -24,7 +24,7 @@ needs. The desks hold no 1Password access. The same shape Ability AI's lab runs 
 ```bash
 set -a; [ -f ~/.env ] && . ~/.env; set +a
 export PATH="$HOME/.local/bin:$PATH" OP_CACHE=false   # OP_CACHE=false: no `op daemon` - the platform's orphan sweeper kills it and op stalls
-command -v op >/dev/null || sh .trinity/setup.sh
+command -v op >/dev/null || bash .trinity/setup.sh   # bash, not sh: the hook uses BASH_SOURCE
 op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - token missing or wrong scope; the principal's move"; exit 1; }
 ```
 
@@ -49,6 +49,8 @@ op vault get "Keymaker Agency" >/dev/null 2>&1 || { echo "vault not readable - t
 - **`apply all`** - `finance`, `sales`, `website` in that order; stop at the first failure and name it.
 
 ## Gates
+
+- `inject_credentials` on another agent needs the platform's **"other agents" self-change grant** on this orchestrator (Trinity 1.0, admin-only toggle in its Settings). Without it the call answers `404 Agent not found` even for an agent you may call - verified 2026-10-29. Report it as `blocked: grant missing`, never work around it.
 
 - Every `op` call runs with `OP_CACHE=false` and a timeout (`timeout 30 op …`); an `op` that hangs is the daemon being swept, not a wrong token.
 
